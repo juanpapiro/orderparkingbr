@@ -15,8 +15,8 @@ Tabela de conteúdo
 <!--ts-->
    * [Sobre](#Sobre)
    * [Tabela de Conteúdo](#tabela-de-conteúdo)
-   * [Iniciar App localmente](#Iniciar App localmente)
-   * [Iniciar App apenas com docker compose](#Iniciar App apenas com docker compose)
+   * [Iniciar App localmente](#Iniciar-App-localmente)
+   * [Iniciar App apenas com docker compose](#Iniciar-App-apenas-com-docker-compose)
    * [Utilização-documentação](#Utilização-documentação)
    * [Arquitetura](#Arquitetura)
 <!--te-->
