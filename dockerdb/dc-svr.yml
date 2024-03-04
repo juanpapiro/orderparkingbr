@@ -1,0 +1,14 @@
+services:
+
+  svr4:
+    image: mongo:latest
+    container_name: svr4
+    command: mongod --configsvr --replSet cfgrsvr --port 27017 --dbpath /data/db --bind_ip_all --quiet
+    ports:
+      - 10003:27017
+    networks:
+      - mongonetwork
+
+networks:
+  mongonetwork:
+    driver: bridge

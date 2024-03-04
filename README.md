@@ -15,21 +15,42 @@ Tabela de conteúdo
 <!--ts-->
    * [Sobre](#Sobre)
    * [Tabela de Conteúdo](#tabela-de-conteúdo)
-   * [Iniciar App](#iniciar-app)
+   * [Iniciar App localmente](#iniciar-app-local)
+   * [Iniciar App docker-compose](#iniciar-app-docker-compose)
    * [Utilização/documentação](#utilização-documentação)
    * [Arquitetura](#arquitetura)
 <!--te-->
 
-Iniciar app
+Iniciar app localmente
 =================
 
 	Iniciar banco de dados com docker-compose
-		no diretório dockerdb
-		- executar docker-compose -f dc-mongodb-cluster.yml up -d	
+        no diretório dockerdb
+        - executar docker-compose -f dc-mongodb-cluster.yml up -d
+        - executar apenas no primeiro start em um terminal git ou bash: sh initdatabase.sh
 
 	Iniciar aplicação
-		- executar mvn spring-boot:run no diretório da aplicação (java 17)
-		- ou startar pela IDE
+       - executar mvn spring-boot:run no diretório da aplicação (java 17)
+       - ou startar pela IDE
+
+    Para finalizar os containers
+        no diretório dockerdb
+       - executar mantendo volumes: docker-compose -f dc-mongodb-cluster.yml down -d
+       - executar removendo volumes: docker-compose -f dc-mongodb-cluster.yml down -d -v
+
+Iniciar app apenas com docker-compose
+=================
+
+	Iniciar banco de dados com docker-compose
+        na raiz do projeto
+        - executar docker-compose -f dc-init.yml up -d
+        no diretório dockerdb
+        - executar apenas no primeiro start em um terminal git ou bash: sh initdatabase.sh
+
+    Para finalizar os containers
+        no diretório raiz
+       - executar mantendo volumes: docker-compose -f dc-init.yml down -d
+       - executar removendo volumes: docker-compose -f dc-init.yml down -d -v
 
 
 Utilização/documentação

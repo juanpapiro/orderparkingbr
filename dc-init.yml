@@ -109,6 +109,25 @@ services:
 
 
 
+  app:
+    container_name: app-orderparkingbr
+    image: juanpapiro/orderparking:latest
+    depends_on:
+      - svr1
+      - svr2
+      - svr3
+      - srd1
+      - srd2
+      - routerdb
+    environment:
+      - spring.data.mongodb.uri=mongodb://routerdb:27017/parking
+    ports:
+      - "8002:8002"
+    networks:
+      - mongonetwork
+
+
+
 networks:
   mongonetwork:
     driver: bridge

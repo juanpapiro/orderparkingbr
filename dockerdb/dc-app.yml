@@ -1,0 +1,42 @@
+services:
+  mongodbsingle:
+    image: "mongo:latest"
+    container_name: mongodbsingle
+    restart: always
+    ports:
+      - "27001:27017"
+    volumes:
+      - mongodb_data_container:/data/db
+    networks:
+      - appnetwork
+
+  app:
+    container_name: app-teste
+    image: orderparkingbr:v1
+   depends_on:
+     - mongodbsingle
+    environment:
+      - spring.data.mongodb.uri=mongodb://mongodbsingle:27017/parking
+#      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
+#      - SPRING_DATA_MONGODB_AUTO_INDEX_CREATION=true
+#      - SPRING.DATA.MONGODB.HOST=routerdb
+#      - SPRING.DATA.MONGODB.PORT=12001
+#      - SPRING_DATA_MONGODB_USERNAME=
+#      - SPRING_DATA_MONGODB_PASSWORD=
+#      - SPRING_DATA_MONGODB_DATABASE=parking
+#      - SPRING.DATA.MONGODB.PORT:
+#      - SPRING.DATA.MONGODB.USERNAME:
+#      - SPRING.DATA.MONGODB.PASSWORD:
+    ports:
+      - "8002:8002"
+    networks:
+      - appnetwork
+
+
+
+networks:
+  appnetwork:
+    driver: bridge
+
+volumes:
+ mongodb_data_container:
