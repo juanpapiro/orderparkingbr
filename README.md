@@ -15,10 +15,10 @@ Tabela de conteúdo
 <!--ts-->
    * [Sobre](#Sobre)
    * [Tabela de Conteúdo](#tabela-de-conteúdo)
-   * [Iniciar App localmente](#iniciar-app-local)
-   * [Iniciar App docker-compose](#iniciar-app-docker-compose)
-   * [Utilização/documentação](#utilização-documentação)
-   * [Arquitetura](#arquitetura)
+   * [Iniciar App localmente](#Iniciar-App-Localmente)
+   * [Iniciar App docker compose](#Iniciar-App-docker-compose)
+   * [Utilização-documentação](#Utilização-documentação)
+   * [Arquitetura](#Arquitetura)
 <!--te-->
 
 Iniciar app localmente
