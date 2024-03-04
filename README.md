@@ -15,13 +15,13 @@ Tabela de conteúdo
 <!--ts-->
    * [Sobre](#Sobre)
    * [Tabela de Conteúdo](#tabela-de-conteúdo)
-   * [Iniciar App localmente](#Iniciar-App-Localmente)
-   * [Iniciar App docker compose](#Iniciar-App-docker-compose)
+   * [Iniciar App localmente](#Iniciar App localmente)
+   * [Iniciar App apenas com docker compose](#Iniciar App apenas com docker compose)
    * [Utilização-documentação](#Utilização-documentação)
    * [Arquitetura](#Arquitetura)
 <!--te-->
 
-Iniciar app localmente
+Iniciar App localmente
 =================
 
 	Iniciar banco de dados com docker-compose
@@ -38,7 +38,7 @@ Iniciar app localmente
        - executar mantendo volumes: docker-compose -f dc-mongodb-cluster.yml down -d
        - executar removendo volumes: docker-compose -f dc-mongodb-cluster.yml down -d -v
 
-Iniciar app apenas com docker-compose
+Iniciar App apenas com docker compose
 =================
 
 	Iniciar banco de dados com docker-compose
@@ -53,7 +53,7 @@ Iniciar app apenas com docker-compose
        - executar removendo volumes: docker-compose -f dc-init.yml down -d -v
 
 
-Utilização/documentação
+Utilização-documentação
 =================
 
     - Swagger acessível em http://localhost:8002/swagger-ui.html
