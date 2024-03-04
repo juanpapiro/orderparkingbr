@@ -1,0 +1,123 @@
+services:
+  svr1:
+    image: mongo:latest
+    container_name: svr1
+    depends_on:
+      - svr2
+      - svr3
+    command: mongod --configsvr --replSet cfgrsvr --port 10001 --dbpath /data/db --bind_ip_all --quiet
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'cfgrsvr',members:[{_id:0,host:'svr1:10001'},{_id:1,host:'svr2:10002'},{_id:2,host:'svr3:10003'}]}) }" | mongosh --port 10001
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      retries: 30
+    ports:
+      - 10001:10001
+    volumes:
+      - svr1:/data/db
+    networks:
+      - mongonetwork
+
+  svr2:
+    image: mongo:latest
+    container_name: svr2
+    command: mongod --configsvr --replSet cfgrsvr --port 10002 --dbpath /data/db --bind_ip_all --quiet
+    ports:
+      - 10002:10002
+    volumes:
+      - svr2:/data/db
+    networks:
+      - mongonetwork
+
+  svr3:
+    image: mongo:latest
+    container_name: svr3
+    command: mongod --configsvr --replSet cfgrsvr --port 10003 --dbpath /data/db --bind_ip_all --quiet
+    ports:
+      - 10003:10003
+    volumes:
+      - svr3:/data/db
+    networks:
+      - mongonetwork
+
+  srd1:
+    image: mongo:latest
+    container_name: srd1
+    depends_on:
+      - svr1
+      - svr2
+      - svr3
+    command: mongod --shardsvr --port 11001 --replSet cfgsrd1 --dbpath /data/db --bind_ip_all --quiet
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'cfgsrd1',members:[{_id:0,host:'srd1:11001'}]}) }" | mongosh --port 11001
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      retries: 30
+    ports:
+      - 11001:11001
+    volumes:
+      - srd1:/data/db
+    networks:
+      - mongonetwork
+
+  srd2:
+    image: mongo:latest
+    container_name: srd2
+    depends_on:
+      - svr1
+      - svr2
+      - svr3
+    command: mongod --shardsvr --port 11002 --replSet cfgsrd2 --dbpath /data/db --bind_ip_all --quiet
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'cfgsrd2',members:[{_id:0,host:'srd2:11002'}]}) }" | mongosh --port 11002
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      retries: 30
+    ports:
+      - 11002:11002
+    volumes:
+      - srd2:/data/db
+    networks:
+      - mongonetwork
+
+
+  routerdb:
+    image: mongo:latest
+    container_name: routerdb
+    depends_on:
+      - svr1
+      - svr2
+      - svr3
+      - srd1
+      - srd2
+    command: mongos --configdb cfgrsvr/svr1:10001,svr2:10002,svr3:10003 --port 12001 --bind_ip_all --quiet #--bind_ip 0.0.0.0 #--bind_ip_all #--bind_ip_all
+    ports:
+      - 12001:12001
+    volumes:
+      # - ./scripts/initrouter.sh:/scripts/initrouter.sh
+      - routerdb:/data/configdb
+    networks:
+      - mongonetwork
+    healthcheck:
+      test: echo "try { sh.status() } catch (err) { sh.addShard("cfgsrd1/srd1:11001")sh.addShard("cfgsrd2/srd2:11002")sh.enableSharding("parking") }" | mongosh --port 12001
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      retries: 30
+
+
+
+networks:
+  mongonetwork:
+    driver: bridge
+
+volumes:
+  svr1:
+  svr2:
+  svr3:
+  srd1:
+  srd2:
+  routerdb:
