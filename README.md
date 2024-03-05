@@ -62,10 +62,10 @@ Utilização-documentação
         curl --location 'http://localhost:8002/parking/order' \
         --header 'Content-Type: application/json' \
         --data '{
-        "vehiclePlate": "GAL2A33",
+        "vehiclePlate": "GAL2A11",
         "parkingTime": 120,
         "payment": "DEBIT",
-        "parkingmeterCode": "f679af614f1810e505df08eac609c16c"
+        "parkingmeterCode": "ed8adb42606647a3df44d65e552dfbc6"
         }'
 		
     - Exemplo de curl para adicionar tempo a uma reserva de estacionamento
@@ -86,7 +86,7 @@ Utilização-documentação
         curl --location 'http://localhost:8002/parking/order/active/GAL2A69?dateFinal=2024-03-01T18%3A33%3A00'
 
 	- Exemplo de curl para consulta de reservas de estacionamento por data de expiração maior que data atual e nome da rua
-        curl --location 'http://localhost:8002/parking/order/active/parkingmeter/leblon?dateFinal=2024-03-01T18%3A33%3A00'
+        curl --location 'http://localhost:8002/parking/order/active/parkingmeter/cardeal?dateFinal=2024-03-01T18%3A33%3A00'
 	
 	
 

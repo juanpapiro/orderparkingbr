@@ -100,6 +100,8 @@ services:
       - routerdb:/data/configdb
     networks:
       - mongonetwork
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test: echo "try { sh.status() } catch (err) { sh.addShard("cfgsrd1/srd1:27017")sh.addShard("cfgsrd2/srd2:27017")sh.enableSharding("parking") }" | mongosh --port 27017
       interval: 5s
@@ -109,9 +111,9 @@ services:
 
 
 
-  app:
+  apporderparking:
     container_name: app-orderparkingbr
-    image: juanpapiro/orderparking:latest
+    image: juanpapiro/orderparkingbr:latest
     depends_on:
       - svr1
       - svr2
@@ -120,17 +122,27 @@ services:
       - srd2
       - routerdb
     environment:
-      - spring.data.mongodb.uri=mongodb://routerdb:27017/parking
+      - spring.data.mongodb.uri=mongodb://host.docker.internal:12001/parking
+      - URL_PARKINGMETER=http://host.docker.internal:8001/parkingmeter
     ports:
       - "8002:8002"
     networks:
-      - mongonetwork
+      - appnetwork
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    links:
+      - routerdb
+ 
 
 
 
 networks:
   mongonetwork:
     driver: bridge
+  appnetwork:
+    name: parkingnetwork
+    driver: bridge
+    external: true
 
 volumes:
   svr1:

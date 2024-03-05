@@ -3,15 +3,13 @@ package br.com.fiap.orderparkingbr.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class OrderParkingUpdateRequest {
 
     @Schema(name = "parkingTime", type = "Integer", description = "Tempo de estacionamento em minutos", requiredMode = Schema.RequiredMode.AUTO ,example = "30")

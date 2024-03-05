@@ -1,42 +1,42 @@
 services:
-  mongodbsingle:
-    image: "mongo:latest"
-    container_name: mongodbsingle
-    restart: always
-    ports:
-      - "27001:27017"
-    volumes:
-      - mongodb_data_container:/data/db
-    networks:
-      - appnetwork
+  # mongodbsingle:
+  #   image: "mongo:latest"
+  #   container_name: mongodbsingle
+  #   restart: always
+  #   ports:
+  #     - "27001:27017"
+  #   volumes:
+  #     - mongodb_data_container:/data/db
+  #   networks:
+  #     - appnetwork
 
-  app:
-    container_name: app-teste
-    image: orderparkingbr:v1
-   depends_on:
-     - mongodbsingle
+  app-order:
+    container_name: app-order
+    image: juanpapiro/orderparkingbr:latest
+    # depends_on:
+    #   - mongodbsingle
     environment:
-      - spring.data.mongodb.uri=mongodb://mongodbsingle:27017/parking
-#      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-#      - SPRING_DATA_MONGODB_AUTO_INDEX_CREATION=true
-#      - SPRING.DATA.MONGODB.HOST=routerdb
-#      - SPRING.DATA.MONGODB.PORT=12001
-#      - SPRING_DATA_MONGODB_USERNAME=
-#      - SPRING_DATA_MONGODB_PASSWORD=
-#      - SPRING_DATA_MONGODB_DATABASE=parking
-#      - SPRING.DATA.MONGODB.PORT:
-#      - SPRING.DATA.MONGODB.USERNAME:
-#      - SPRING.DATA.MONGODB.PASSWORD:
+      - spring.data.mongodb.uri=mongodb://host.docker.internal:12001/parking
+      - URL_PARKINGMETER=http://host.docker.internal:8001/parkingmeter
     ports:
-      - "8002:8002"
+      - "8003:8002"
     networks:
       - appnetwork
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 
 
 
 networks:
   appnetwork:
+    name: parkingnetwork
     driver: bridge
+    external: true
 
-volumes:
- mongodb_data_container:
+
+
+
+
+# volumes:
+#  mongodb_data_container:

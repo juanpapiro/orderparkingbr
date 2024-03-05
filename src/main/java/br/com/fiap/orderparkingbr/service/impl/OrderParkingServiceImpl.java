@@ -8,6 +8,7 @@ import br.com.fiap.orderparkingbr.repository.OrderParkingRepository;
 import br.com.fiap.orderparkingbr.service.OrderParkingService;
 import br.com.fiap.orderparkingbr.service.ParkingmeterService;
 import br.com.fiap.orderparkingbr.service.PaymentService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+@Log4j2
 @Service
 public class OrderParkingServiceImpl implements OrderParkingService {
 
@@ -52,12 +53,14 @@ public class OrderParkingServiceImpl implements OrderParkingService {
      */
     @Override
     public ResponseEntity<OrderParking> createOrder(OrderParkingRequest request) {
+        log.info("***** Criando reserva de estacionamento: {}", request);
         ParkingmeterDto parkingmeterDto = parkingmeterService
                 .findParkingmeter(request.getParkingmeterCode());
         Payment payment = paymentService.createPayment(request.getParkingTime(),
                 PaymentType.findPaymentType(request.getPayment()));
         OrderParking orderParking = new OrderParking(request, payment, parkingmeterDto);
         orderParking = orderParkingRepository.save(orderParking);
+        log.info("***** Reserva de estacionamento criada com sucesso: {}", orderParking);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderParking);
     }
 
@@ -70,6 +73,7 @@ public class OrderParkingServiceImpl implements OrderParkingService {
     @Transactional
     @Override
     public ResponseEntity<OrderParking> updateAddTime(String id, OrderParkingUpdateRequest request) {
+        log.info("***** Adicionando tempo em reserva de estacionamento. id: {} - request: {}", id, request);
         return orderParkingRepository.findById(id)
                 .map(orderLocate -> {
                     Payment payment = paymentService.createPayment(request.getParkingTime(),
@@ -77,7 +81,9 @@ public class OrderParkingServiceImpl implements OrderParkingService {
                     orderLocate.setParkingTime(orderLocate.getParkingTime() + request.getParkingTime());
                     orderLocate.setDateFinal(orderLocate.getDateStart().plusMinutes(orderLocate.getParkingTime()));
                     orderLocate.getPayment().add(payment);
-                    return ResponseEntity.ok(orderParkingRepository.save(orderLocate));
+                    OrderParking orderParkingResp = orderParkingRepository.save(orderLocate);
+                    log.info("***** Tempo em reserva de estacionamento adicionado com sucesso: {}", orderParkingResp);
+                    return ResponseEntity.ok(orderParkingResp);
                 }).orElse(ResponseEntity.notFound().build());
     }
 
@@ -87,10 +93,12 @@ public class OrderParkingServiceImpl implements OrderParkingService {
      */
     @Override
     public ResponseEntity<PageOrderParking> findOrders(Pageable pageable) {
+        log.info("***** Buscando reservas de estacionamento: {}", pageable);
         Page<OrderParking> pageOrders = orderParkingRepository.findAll(pageable);
         return Optional.ofNullable(pageOrders).map(pg -> {
             PageOrderParking ordersResponse = new PageOrderParking(pg.getContent(),
                     pg.getTotalElements(), pg.getTotalPages(), pg.getSize(), pg.getNumber());
+            log.info("***** Reservas de estacionamento localizadas: {}", ordersResponse);
             return ResponseEntity.ok(ordersResponse);
         }).orElse(ResponseEntity.notFound().build());
     }
@@ -105,6 +113,9 @@ public class OrderParkingServiceImpl implements OrderParkingService {
     @Override
     public ResponseEntity<List<VehiclePlateByParkingmeter>> findOrdersByDateFinalAndParkingmeterId(
             LocalDateTime dateFinal, String id) {
+
+        log.info("***** Buscando reservas de estacionamento. data: {} - id: {}", dateFinal, id);
+
         Criteria criteria = Criteria.where("dateFinal")
                 .gte(dateFinal)
                 .and("parkingmeter.code").is(id);
@@ -122,6 +133,9 @@ public class OrderParkingServiceImpl implements OrderParkingService {
 
         List<VehiclePlateByParkingmeter> result = mongoTemplate.aggregate(
                 aggregation, VehiclePlateByParkingmeter.class).getMappedResults();
+
+        log.info("***** Reservas de estacionamento localizadas: {}", result);
+
         return ResponseEntity.ok(result);
     }
 
@@ -134,6 +148,9 @@ public class OrderParkingServiceImpl implements OrderParkingService {
     @Override
     public ResponseEntity<List<VehiclePlateByParkingmeter>> findOrdersByVehiclePlate(
             LocalDateTime dateFinal, String vehiclePlate) {
+
+        log.info("***** Buscando reservas de estacionamento. data: {} - placa: {}", dateFinal, vehiclePlate);
+
         Criteria criteria = Criteria
                 .where("vehiclePlate").is(vehiclePlate)
                 .and("dateFinal").gte(dateFinal);
@@ -143,6 +160,9 @@ public class OrderParkingServiceImpl implements OrderParkingService {
                 Aggregation.sort(Sort.by("dateFinal").descending()));
         List<VehiclePlateByParkingmeter> result = mongoTemplate.aggregate(
                 aggregate, VehiclePlateByParkingmeter.class).getMappedResults();
+
+        log.info("***** Reservas de estacionamento localizadas: {}", result);
+
         return result.isEmpty() ? ResponseEntity.notFound().build()
             : ResponseEntity.ok(result);
     }
@@ -150,6 +170,9 @@ public class OrderParkingServiceImpl implements OrderParkingService {
     @Override
     public ResponseEntity<List<VehiclePlateByParkingmeter>> findOrdersByStreet(
             LocalDateTime dateFinal, String street) {
+
+        log.info("***** Buscando reservas de estacionamento. data: {} - rua: {}", dateFinal, street);
+
         Criteria criteria = Criteria
                 .where("parkingmeter.street").regex(street, "i")
                 .and("dateFinal").gte(dateFinal);
@@ -159,6 +182,9 @@ public class OrderParkingServiceImpl implements OrderParkingService {
                 Aggregation.sort(Sort.by("dateFinal").descending()));
         List<VehiclePlateByParkingmeter> result = mongoTemplate.aggregate(
                 aggregate, VehiclePlateByParkingmeter.class).getMappedResults();
+
+        log.info("***** Reservas de estacionamento localizadas: {}", result);
+
         return Optional.ofNullable(result).filter(list -> !list.isEmpty())
                 .map(list -> ResponseEntity.ok(list)).orElse(ResponseEntity.notFound().build());
     }

@@ -1,10 +1,7 @@
 package br.com.fiap.orderparkingbr.dto;
 
 import br.com.fiap.orderparkingbr.model.OrderParking;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,6 +9,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class PageOrderParking {
 
     private List<OrderParking> content;

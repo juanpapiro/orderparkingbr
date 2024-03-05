@@ -2,10 +2,7 @@ package br.com.fiap.orderparkingbr.model;
 
 import br.com.fiap.orderparkingbr.dto.OrderParkingRequest;
 import br.com.fiap.orderparkingbr.dto.ParkingmeterDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -19,6 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class OrderParking {
 
     @Id

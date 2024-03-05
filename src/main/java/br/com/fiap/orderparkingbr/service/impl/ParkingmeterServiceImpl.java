@@ -2,6 +2,7 @@ package br.com.fiap.orderparkingbr.service.impl;
 
 import br.com.fiap.orderparkingbr.dto.ParkingmeterDto;
 import br.com.fiap.orderparkingbr.service.ParkingmeterService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
+@Log4j2
 @Service
 public class ParkingmeterServiceImpl implements ParkingmeterService {
 
@@ -29,13 +31,17 @@ public class ParkingmeterServiceImpl implements ParkingmeterService {
         UriComponentsBuilder uri = UriComponentsBuilder
                 .fromHttpUrl(urlParkingmeter)
                 .pathSegment(parkingmeterCode);
+        log.info(String.format("***** Buscando dados do parquimetro - URL: %s",uri.toUriString()));
         try {
             ResponseEntity<ParkingmeterDto> response = restTemplate.exchange(uri.toUriString(),
                     HttpMethod.GET, null, ParkingmeterDto.class);
-            return Optional.ofNullable(response)
+            ParkingmeterDto parkingmeter = Optional.ofNullable(response)
                     .map(ResponseEntity::getBody)
                     .orElseThrow(() -> new IllegalArgumentException("Parquímetro não encontrado"));
+            log.info("***** Parquimetro localizado: {}", parkingmeter);
+            return parkingmeter;
         } catch(HttpClientErrorException.NotFound e) {
+            log.info(e);
             throw new IllegalArgumentException("Parquímetro não encontrado");
         }
     }

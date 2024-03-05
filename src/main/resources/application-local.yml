@@ -1,0 +1,18 @@
+server:
+  port: 8011
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:12001/parking
+      port:
+      username:
+      password:
+
+  #spring.sql.init.mode=always
+  #spring.datasource.initialize=always
+  #
+  #spring.jpa.defer-datasource-initialization=true
+  #spring.jpa.show-sql=true
+
+URL_PARKINGMETER: http://localhost:8010/parkingmeter
