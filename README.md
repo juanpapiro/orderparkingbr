@@ -16,7 +16,7 @@ Tabela de conteúdo
    * [Sobre](#Sobre)
    * [Tabela de Conteúdo](#tabela-de-conteúdo)
    * [Iniciar App localmente](#Iniciar-App-localmente)
-   * [Iniciar App apenas com docker compose](#Iniciar-App-apenas-com-docker-compose)
+   * [Iniciar App apenas com imagens do docker hub](#Iniciar-App-apenas-com-imagens-do-docker-hub)
    * [Utilização-documentação](#Utilização-documentação)
    * [Arquitetura](#Arquitetura)
 <!--te-->
@@ -38,7 +38,7 @@ Iniciar App localmente
        - executar mantendo volumes: docker-compose -f dc-mongodb-cluster.yml down -d
        - executar removendo volumes: docker-compose -f dc-mongodb-cluster.yml down -d -v
 
-Iniciar App apenas com docker compose
+Iniciar App apenas com imagens do docker hub
 =================
 
 	Iniciar banco de dados com docker-compose
