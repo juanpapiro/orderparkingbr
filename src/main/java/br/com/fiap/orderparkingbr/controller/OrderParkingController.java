@@ -30,7 +30,7 @@ public class OrderParkingController implements OrderParkingControllerOpenApi {
 
 
     @GetMapping("/order")
-    public ResponseEntity<PageOrderParking> findCustomers(
+    public ResponseEntity<PageOrderParking> findOrders(
             @PageableDefault(page = 0, size = 10) Pageable pageable) {
         return orderParkingService.findOrders(pageable);
     }

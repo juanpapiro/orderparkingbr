@@ -23,7 +23,7 @@ public interface OrderParkingControllerOpenApi {
             content = {@Content(schema = @Schema(implementation = PageOrderParking.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})
     @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})
     @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})
-    ResponseEntity<PageOrderParking> findCustomers(Pageable pageable);
+    ResponseEntity<PageOrderParking> findOrders(Pageable pageable);
 
 
 

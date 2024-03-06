@@ -93,4 +93,4 @@ Utilização-documentação
 Arquitetura
 =================
 
-<img src="arq_orderparkingbr.jpg">
+<img src="arq_orderparkingbr.png">
