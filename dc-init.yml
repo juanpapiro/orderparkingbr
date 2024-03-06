@@ -83,6 +83,27 @@ services:
     networks:
       - mongonetwork
 
+  srd3:
+    image: mongo:latest
+    container_name: srd3
+    depends_on:
+      - svr1
+      - svr2
+      - svr3
+    command: mongod --shardsvr --port 27017 --replSet cfgsrd3 --dbpath /data/db --bind_ip_all --quiet
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'cfgsrd3',members:[{_id:0,host:'srd3:27017'}]}) }" | mongosh --port 27017
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      retries: 30
+    ports:
+      - 11003:27017
+    volumes:
+      - srd3:/data/db
+    networks:
+      - mongonetwork
+
 
   routerdb:
     image: mongo:latest
@@ -93,6 +114,7 @@ services:
       - svr3
       - srd1
       - srd2
+      - srd3
     command: mongos --configdb cfgrsvr/svr1:27017,svr2:27017,svr3:27017 --port 27017 --bind_ip_all --quiet #--bind_ip 0.0.0.0 #--bind_ip_all #--bind_ip_all
     ports:
       - 12001:27017
@@ -103,7 +125,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
-      test: echo "try { sh.status() } catch (err) { sh.addShard("cfgsrd1/srd1:27017")sh.addShard("cfgsrd2/srd2:27017")sh.enableSharding("parking") }" | mongosh --port 27017
+      test: echo "try { sh.status() } catch (err) { sh.addShard("cfgsrd1/srd1:27017")sh.addShard("cfgsrd2/srd2:27017")sh.addShard("cfgsrd3/srd3:27017")sh.enableSharding("parking") }" | mongosh --port 27017
       interval: 5s
       timeout: 30s
       start_period: 0s
@@ -120,6 +142,7 @@ services:
       - svr3
       - srd1
       - srd2
+      - srd3
       - routerdb
     environment:
       - spring.data.mongodb.uri=mongodb://host.docker.internal:12001/parking
@@ -150,4 +173,5 @@ volumes:
   svr3:
   srd1:
   srd2:
+  srd3:
   routerdb:

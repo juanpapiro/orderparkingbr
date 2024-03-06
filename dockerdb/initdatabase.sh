@@ -2,6 +2,7 @@ docker exec -i routerdb mongosh --host localhost --port 27017 <<EOF
 sh.startBalancer();
 sh.addShard("cfgsrd1/srd1:27017");
 sh.addShard("cfgsrd2/srd2:27017");
+sh.addShard("cfgsrd3/srd3:27017");
 sh.enableSharding("parking");
 sh.enableSharding("parking");
 use parking;
